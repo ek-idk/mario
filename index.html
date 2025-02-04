@@ -46,27 +46,63 @@
     
     /* Content section */
     .content-section {
-      padding: 50px 20px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
       text-align: center;
+      padding: 20px;
     }
     
+    /* Input and button container */
+    .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
     /* Custom textbox style */
     input[type="text"] {
       padding: 10px;
       font-size: 18px;
-      border-radius: 5px;
       border: 2px solid #fff;
       outline: none;
       background-color: #000;
       color: #fff;
       text-align: center;
       width: 100%;
-      max-width: 300px;
+      max-width: 250px;
+    }
+    .thestuff{
+      border-radius: 25% !important;
     }
     
+    /* Enter button - Now Circular */
+.enter-button {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.enter-button:hover {
+  background-color: #ddd;
+}
+
+.enter-button::after {
+  content: "→";
+  font-size: 24px;
+  color: #000000;
+  font-weight: bold;
+}
+
     /* Paper message */
     .paper {
       margin-top: 15px;
@@ -107,17 +143,14 @@
   </section>
 
   <!-- Content section -->
-  <section class="content-section">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-12 text-center">
-          <input type="text" id="secretInput" placeholder="Type a secret word...">
-        </div>
+  <section class="content-section thestuff">
+    <div class="container d-flex flex-column align-items-center">
+      <div class="input-group">
+        <input type="text" id="secretInput" placeholder="Type a secret word...">
+        <button class="enter-button thestuff" onclick="checkSecret()"></button>
       </div>
-      <div class="row justify-content-center mt-3">
-        <div class="col-12 d-flex flex-column align-items-center" id="paperContainer">
-          <!-- Papers will be added here dynamically -->
-        </div>
+      <div class="mt-3 d-flex flex-column align-items-center" id="paperContainer">
+        <!-- Papers will be added here dynamically -->
       </div>
     </div>
   </section>
@@ -140,29 +173,35 @@
 
     let selectedPapers = [];
 
+    // Function to check secret word and reveal papers
+    function checkSecret() {
+      if (secretInput.value.trim().toLowerCase() === 'apples') {
+        paperContainer.innerHTML = ''; // Clear previous papers
+        selectedPapers = []; // Reset selection tracking
+
+        messages.forEach((message, index) => {
+          const paper = document.createElement('div');
+          paper.classList.add('paper');
+          paper.textContent = message;
+          paperContainer.appendChild(paper);
+
+          // Click event to select/deselect papers
+          paper.addEventListener('click', () => handlePaperClick(paper));
+
+          // Delay appearance for staggered effect
+          setTimeout(() => {
+            paper.classList.add('visible');
+          }, index * 300);
+        });
+      } else {
+        paperContainer.innerHTML = ''; // Hide papers if wrong word
+      }
+    }
+
+    // Check secret when Enter key is pressed
     secretInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
-        if (secretInput.value.trim().toLowerCase() === 'mario') {
-          paperContainer.innerHTML = ''; // Clear previous papers
-          selectedPapers = []; // Reset selection tracking
-
-          messages.forEach((message, index) => {
-            const paper = document.createElement('div');
-            paper.classList.add('paper');
-            paper.textContent = message;
-            paperContainer.appendChild(paper);
-
-            // Click event to select/deselect papers
-            paper.addEventListener('click', () => handlePaperClick(paper));
-
-            // Delay appearance for staggered effect
-            setTimeout(() => {
-              paper.classList.add('visible');
-            }, index * 300);
-          });
-        } else {
-          paperContainer.innerHTML = ''; // Hide papers if wrong word
-        }
+        checkSecret();
       }
     });
 
