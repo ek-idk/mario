@@ -199,7 +199,8 @@
 
     // Function to check secret word and reveal papers
     function checkSecret() {
-      if (secretInput.value.trim().toLowerCase() === '20') {
+      const acceptedWords = ['edinburg', 'rotterdam','eindhoven']; // List of accepted words
+      if (acceptedWords.includes(secretInput.value.trim().toLowerCase())) {
         paperContainer.innerHTML = ''; // Clear previous papers
         selectedPapers = []; // Reset selection tracking
 
